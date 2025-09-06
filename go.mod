@@ -1,6 +1,6 @@
 module github.com/UnitVectorY-Labs/jwks-catalog-crawler
 
-go 1.25.0 // GOVERSION
+go 1.25.1 // GOVERSION
 
 require (
 	cloud.google.com/go/pubsub v1.50.1
