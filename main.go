@@ -8,10 +8,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime/debug"
 
 	"cloud.google.com/go/pubsub"
 	"gopkg.in/yaml.v2"
 )
+
+// Version is the application version, injected at build time via ldflags
+var Version = "dev"
 
 // Service represents a JWKS service
 type Service struct {
@@ -32,6 +36,18 @@ type CrawlRequest struct {
 }
 
 func main() {
+	// Set the build version from the build info if not set by the build system
+	if Version == "dev" || Version == "" {
+		if bi, ok := debug.ReadBuildInfo(); ok {
+			if bi.Main.Version != "" && bi.Main.Version != "(devel)" {
+				Version = bi.Main.Version
+			}
+		}
+	}
+
+	// Log the version
+	log.Printf("JWKS Catalog Crawler version: %s", Version)
+
 	// Load environment variables
 	yamlURL := os.Getenv("YAML_CATALOG_URL")
 	projectID := os.Getenv("GCP_PROJECT_ID")
